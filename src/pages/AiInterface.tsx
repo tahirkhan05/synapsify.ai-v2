@@ -4,9 +4,8 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Select } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import {
   Tooltip,
   TooltipContent,
@@ -20,13 +19,13 @@ import {
   Mic,
   Send,
   RefreshCw,
-  LayoutGrid,
   X,
-  PlusCircle,
-  MinusCircle,
+  Home,
+  Copy,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChatPanel } from "@/components/ChatPanel";
+import { PanelToggle } from "@/components/PanelToggle";
 import { useToast } from "@/hooks/use-toast";
 
 // Mock data for model providers
@@ -69,38 +68,36 @@ const AiInterface = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [enableSummary, setEnableSummary] = useState(true);
   const [panelLayout, setPanelLayout] = useState<1|2|4>(1);
+  const [panelCount, setPanelCount] = useState(1);
   const [panels, setPanels] = useState([
     { id: 1, provider: "openai", model: "gpt-4.1-nano", audience: "", role: "", messages: [] }
   ]);
   const [summaryContent, setSummaryContent] = useState("");
 
-  const handleAddPanel = () => {
-    if (panels.length < 4) {
-      const newPanel = {
-        id: Date.now(),
-        provider: "deepseek",
-        model: "deepseek-chat",
-        audience: "",
-        role: "",
-        messages: []
-      };
-      setPanels([...panels, newPanel]);
-      
-      // Adjust layout automatically based on number of panels
-      if (panels.length === 1) setPanelLayout(2);
-      if (panels.length === 3) setPanelLayout(4);
+  const handleUpdatePanelCount = (count: number) => {
+    if (count === panels.length) return;
+    
+    if (count > panels.length) {
+      // Add panels
+      const newPanels = [...panels];
+      while (newPanels.length < count) {
+        const providerIndex = newPanels.length % modelProviders.length;
+        newPanels.push({
+          id: Date.now() + newPanels.length,
+          provider: modelProviders[providerIndex].id,
+          model: modelProviders[providerIndex].models[0],
+          audience: "",
+          role: "",
+          messages: []
+        });
+      }
+      setPanels(newPanels);
+    } else {
+      // Remove panels
+      setPanels(panels.slice(0, count));
     }
-  };
-
-  const handleRemovePanel = (id: number) => {
-    if (panels.length > 1) {
-      const updatedPanels = panels.filter(panel => panel.id !== id);
-      setPanels(updatedPanels);
-      
-      // Adjust layout automatically based on number of panels
-      if (updatedPanels.length === 1) setPanelLayout(1);
-      if (updatedPanels.length === 2) setPanelLayout(2);
-    }
+    
+    setPanelCount(count);
   };
 
   const handleClearChat = () => {
@@ -189,6 +186,16 @@ const AiInterface = () => {
     });
   };
 
+  const handleCopySummary = () => {
+    if (summaryContent) {
+      navigator.clipboard.writeText(summaryContent);
+      toast({
+        title: "Summary Copied",
+        description: "The summary has been copied to your clipboard."
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
@@ -202,6 +209,20 @@ const AiInterface = () => {
                 className="h-8 w-8"
               />
               <span className="font-bold text-xl">SYNAPSIFY.AI</span>
+            </Link>
+            <Link to="/">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Home className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Back to home</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </Link>
           </div>
           
@@ -228,25 +249,6 @@ const AiInterface = () => {
               </Tooltip>
             </TooltipProvider>
 
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="icon"
-                    onClick={() => {
-                      if (panelLayout === 1) setPanelLayout(2);
-                      else if (panelLayout === 2) setPanelLayout(4);
-                      else setPanelLayout(1);
-                    }}
-                  >
-                    <LayoutGrid className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Change panel layout</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
             <ThemeToggle />
           </div>
         </div>
@@ -258,17 +260,12 @@ const AiInterface = () => {
         <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center">
-              <h2 className="text-xl font-bold">AI Panels</h2>
-              {panels.length < 4 && (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="ml-2" 
-                  onClick={handleAddPanel}
-                >
-                  <PlusCircle className="h-5 w-5" />
-                </Button>
-              )}
+              <PanelToggle 
+                panelCount={panelCount} 
+                onPanelCountChange={handleUpdatePanelCount}
+                layout={panelLayout} 
+                onLayoutChange={setPanelLayout} 
+              />
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
@@ -295,7 +292,6 @@ const AiInterface = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="relative"
                 >
                   <ChatPanel
                     panel={panel}
@@ -308,16 +304,6 @@ const AiInterface = () => {
                       setPanels(updatedPanels);
                     }}
                   />
-                  {panels.length > 1 && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2"
-                      onClick={() => handleRemovePanel(panel.id)}
-                    >
-                      <MinusCircle className="h-4 w-4" />
-                    </Button>
-                  )}
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -333,7 +319,21 @@ const AiInterface = () => {
           >
             <Card className="border bg-secondary/5">
               <CardContent className="p-4">
-                <h3 className="text-lg font-semibold mb-2">Summary</h3>
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="text-lg font-semibold">Summary</h3>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon" onClick={handleCopySummary}>
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Copy summary</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
                 <div className="prose dark:prose-invert">
                   <p>{summaryContent}</p>
                 </div>

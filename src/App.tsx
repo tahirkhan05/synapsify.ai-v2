@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import Index from "./pages/Index";
 import AiInterface from "./pages/AiInterface";
 import NotFound from "./pages/NotFound";
+import "./App.css"; // Import App.css for custom styles
 
 // Apply theme from localStorage or system preference on mount
 const ThemeInitializer = () => {

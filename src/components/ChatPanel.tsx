@@ -3,8 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { 
   Card, 
   CardContent, 
-  CardHeader, 
-  CardTitle 
+  CardHeader 
 } from "@/components/ui/card";
 import {
   Select,
@@ -13,9 +12,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { MessageSquare } from "lucide-react";
+import { Copy, Settings } from "lucide-react";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   role: "user" | "assistant";
@@ -50,6 +56,7 @@ export const ChatPanel = ({
   isGenerating, 
   onUpdate 
 }: ChatPanelProps) => {
+  const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -92,23 +99,30 @@ export const ChatPanel = ({
     });
   };
 
+  const handleCopyLastMessage = () => {
+    if (panel.messages.length > 0) {
+      const lastMessage = panel.messages[panel.messages.length - 1];
+      if (lastMessage.role === "assistant") {
+        navigator.clipboard.writeText(lastMessage.content);
+        toast({
+          title: "Copied to clipboard",
+          description: "The response has been copied to your clipboard."
+        });
+      }
+    }
+  };
+
   const selectedProvider = modelProviders.find(p => p.id === panel.provider);
 
   return (
     <Card className="h-[600px] flex flex-col bg-card border">
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <MessageSquare className="h-5 w-5" />
-            {selectedProvider?.name || "AI Model"}
-          </CardTitle>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-2">
+      <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
+        <div className="flex items-center space-x-2 w-full">
           <Select
             value={panel.provider}
             onValueChange={handleProviderChange}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-[140px]">
               <SelectValue placeholder="Provider" />
             </SelectTrigger>
             <SelectContent>
@@ -124,7 +138,7 @@ export const ChatPanel = ({
             value={panel.model}
             onValueChange={handleModelChange}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Model" />
             </SelectTrigger>
             <SelectContent>
@@ -136,19 +150,65 @@ export const ChatPanel = ({
             </SelectContent>
           </Select>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-2">
-          <Input
-            placeholder="Audience (optional)"
-            value={panel.audience}
-            onChange={handleAudienceChange}
-            className="w-full"
-          />
-          <Input
-            placeholder="Role (optional)"
-            value={panel.role}
-            onChange={handleRoleChange}
-            className="w-full"
-          />
+        
+        <div className="flex items-center space-x-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={handleCopyLastMessage}
+                  disabled={!panel.messages.length}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Copy last response</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Settings className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <div className="grid gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium leading-none">Advanced Settings</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Configure audience and role for this AI.
+                  </p>
+                </div>
+                <div className="grid gap-2">
+                  <div className="grid grid-cols-3 items-center gap-4">
+                    <label htmlFor="audience">Audience</label>
+                    <Input
+                      id="audience"
+                      placeholder="Audience (optional)"
+                      value={panel.audience}
+                      onChange={handleAudienceChange}
+                      className="col-span-2"
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 items-center gap-4">
+                    <label htmlFor="role">Role</label>
+                    <Input
+                      id="role"
+                      placeholder="Role (optional)"
+                      value={panel.role}
+                      onChange={handleRoleChange}
+                      className="col-span-2"
+                    />
+                  </div>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </CardHeader>
 
@@ -200,3 +260,11 @@ export const ChatPanel = ({
     </Card>
   );
 };
+
+// Add required imports
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
