@@ -11,7 +11,7 @@ import {
   LayoutGrid,
   PanelLeft,
   PanelTop,
-  Panels,
+  PanelsTopLeft,
 } from "lucide-react";
 
 interface PanelToggleProps {
@@ -80,7 +80,7 @@ export function PanelToggle({
               size="icon"
               onClick={() => togglePanel(4)}
             >
-              <Panels className="h-4 w-4" />
+              <PanelsTopLeft className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
