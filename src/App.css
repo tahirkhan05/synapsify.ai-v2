@@ -43,11 +43,12 @@
 
 /* Custom header styling */
 header {
-  border-bottom: 1px solid var(--border);
-  background-color: hsl(var(--background));
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-bottom: 2px solid var(--border);
+  background-color: hsl(var(--secondary));
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .dark header {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  background-color: hsl(var(--secondary));
 }

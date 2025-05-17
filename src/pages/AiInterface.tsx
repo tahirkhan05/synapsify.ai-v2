@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,6 +21,7 @@ import {
   X,
   Home,
   Copy,
+  LayoutGrid,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChatPanel } from "@/components/ChatPanel";
@@ -210,11 +210,14 @@ const AiInterface = () => {
               />
               <span className="font-bold text-xl">SYNAPSIFY.AI</span>
             </Link>
+          </div>
+          
+          <div className="flex items-center space-x-4">
             <Link to="/">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" className="border-zinc-400 dark:border-zinc-600">
                       <Home className="h-4 w-4" />
                     </Button>
                   </TooltipTrigger>
@@ -224,13 +227,11 @@ const AiInterface = () => {
                 </Tooltip>
               </TooltipProvider>
             </Link>
-          </div>
-          
-          <div className="flex items-center space-x-4">
+            
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon" onClick={handleClearChat}>
+                  <Button variant="outline" size="icon" onClick={handleClearChat} className="border-zinc-400 dark:border-zinc-600">
                     <RefreshCw className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
@@ -241,7 +242,7 @@ const AiInterface = () => {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon" onClick={handleDownload}>
+                  <Button variant="outline" size="icon" onClick={handleDownload} className="border-zinc-400 dark:border-zinc-600">
                     <Download className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
@@ -266,6 +267,30 @@ const AiInterface = () => {
                 layout={panelLayout} 
                 onLayoutChange={setPanelLayout} 
               />
+              
+              <div className="ml-4">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="border-zinc-400 dark:border-zinc-600"
+                        onClick={() => {
+                          if (layout === 1) onLayoutChange(2);
+                          else if (layout === 2) onLayoutChange(4);
+                          else onLayoutChange(1);
+                        }}
+                      >
+                        <LayoutGrid className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Change grid layout</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">

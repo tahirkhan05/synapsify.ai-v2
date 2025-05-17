@@ -45,6 +45,7 @@ export function PanelToggle({
               variant={panelCount === 1 ? "default" : "outline"}
               size="icon"
               onClick={() => togglePanel(1)}
+              className="border-zinc-400 dark:border-zinc-600"
             >
               <PanelLeft className="h-4 w-4" />
             </Button>
@@ -62,6 +63,7 @@ export function PanelToggle({
               variant={panelCount === 2 ? "default" : "outline"}
               size="icon"
               onClick={() => togglePanel(2)}
+              className="border-zinc-400 dark:border-zinc-600"
             >
               <PanelTop className="h-4 w-4" />
             </Button>
@@ -79,33 +81,13 @@ export function PanelToggle({
               variant={panelCount === 4 ? "default" : "outline"}
               size="icon"
               onClick={() => togglePanel(4)}
+              className="border-zinc-400 dark:border-zinc-600"
             >
               <PanelsTopLeft className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
             <p>Four panels</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => {
-                if (layout === 1) onLayoutChange(2);
-                else if (layout === 2) onLayoutChange(4);
-                else onLayoutChange(1);
-              }}
-            >
-              <LayoutGrid className="h-4 w-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Change grid layout</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

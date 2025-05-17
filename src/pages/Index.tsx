@@ -137,7 +137,7 @@ const Index = () => {
           >
             <Button 
               size="lg" 
-              className="bg-primary hover:bg-primary/90 text-white"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground border-2 border-primary/30"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               asChild
