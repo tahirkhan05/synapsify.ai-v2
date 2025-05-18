@@ -1,6 +1,6 @@
 # Synapsify V2 (AI Aggregator)
  
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Frontend requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 ## Follow these steps to view frontend:
 
@@ -18,7 +18,6 @@ npm i
 npm run dev
 ```
 
-
 ## The frontend is built with:
 
 - Vite
@@ -27,9 +26,6 @@ npm run dev
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/9ed929e3-24ec-4316-8c6a-844c9a0f7c2f) and click on Share -> Publish.
 
 ## Follow these steps for working backend:
 
