@@ -68,7 +68,7 @@ const AiInterface = () => {
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [enableSummary, setEnableSummary] = useState(true);
-  const [panelLayout, setPanelLayout] = useState<1|2|4>(1);
+  const [panelLayout, setPanelLayout] = useState<1|2|3|4>(1);
   const [panelCount, setPanelCount] = useState(1);
   const [panels, setPanels] = useState([
     { id: 1, provider: "openai", model: "gpt-4.1-nano", audience: "", role: "", messages: [] }
@@ -200,7 +200,7 @@ const AiInterface = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b">
+      <header className="border-b bg-primary/5 shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2 mr-6">
@@ -213,22 +213,7 @@ const AiInterface = () => {
             </Link>
           </div>
           
-          <div className="flex items-center space-x-4">
-            <Link to="/">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="border-zinc-400 dark:border-zinc-600">
-                      <Home className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Back to home</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </Link>
-            
+          <div className="flex items-center space-x-3">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -237,6 +222,29 @@ const AiInterface = () => {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Clear chat history</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="border-zinc-400 dark:border-zinc-600"
+                    onClick={() => {
+                      if (panelLayout === 1) setPanelLayout(2);
+                      else if (panelLayout === 2) setPanelLayout(3);
+                      else if (panelLayout === 3) setPanelLayout(4);
+                      else setPanelLayout(1);
+                    }}
+                  >
+                    <LayoutGrid className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Change grid layout</p>
+                </TooltipContent>
               </Tooltip>
             </TooltipProvider>
 
@@ -251,6 +259,21 @@ const AiInterface = () => {
               </Tooltip>
             </TooltipProvider>
 
+            <Link to="/">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="icon" className="border-zinc-400 dark:border-zinc-600">
+                      <Home className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Back to home</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </Link>
+            
             <ThemeToggle />
           </div>
         </div>
@@ -268,30 +291,6 @@ const AiInterface = () => {
                 layout={panelLayout} 
                 onLayoutChange={setPanelLayout} 
               />
-              
-              <div className="ml-4">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="border-zinc-400 dark:border-zinc-600"
-                        onClick={() => {
-                          if (panelLayout === 1) setPanelLayout(2);
-                          else if (panelLayout === 2) setPanelLayout(4);
-                          else setPanelLayout(1);
-                        }}
-                      >
-                        <LayoutGrid className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Change grid layout</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
@@ -308,7 +307,8 @@ const AiInterface = () => {
           <div className={`grid gap-4 ${
             panelLayout === 1 ? 'grid-cols-1' : 
             panelLayout === 2 ? 'grid-cols-1 md:grid-cols-2' : 
-            'grid-cols-1 md:grid-cols-2'
+            panelLayout === 3 ? 'grid-cols-1 md:grid-cols-3' :
+            'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
           }`}>
             <AnimatePresence>
               {panels.map((panel) => (

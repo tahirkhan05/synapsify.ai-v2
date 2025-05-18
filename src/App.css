@@ -43,12 +43,15 @@
 
 /* Custom header styling */
 header {
+  background: linear-gradient(to bottom, hsl(var(--secondary)), transparent);
   border-bottom: 2px solid var(--border);
-  background-color: hsl(var(--secondary));
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  position: relative;
+  z-index: 10;
 }
 
 .dark header {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  background-color: hsl(var(--secondary));
+  background: linear-gradient(to bottom, hsl(var(--secondary)/50%), transparent);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid hsl(var(--border));
 }
