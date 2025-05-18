@@ -57,3 +57,32 @@ python main.py
 ## The backend is built with:
 
 - Python
+
+## Future Implementations:
+
+### LLM Brain Split Mode
+
+“Split this task between multiple models intelligently.”
+You define a goal: "Write an email + generate bullet points + translate to Spanish."
+Synapsify automatically delegates each part to the best model:
+GPT → email
+Gemini → bullet points
+Groq → Spanish translation
+Why it wins: You’ve built task-level model routing = a mini-AutoGPT with multiple brains.
+
+### LLM Response RPG Mode
+
+“Let’s play model vs. model like a game.”
+Set a scenario: “Solve the climate crisis.”
+Models take turns proposing solutions and attacking each other’s plans.
+You choose the winner, RPG style.
+Score based on logic, ethics, creativity.
+Why it wins: Entertainment + AI awareness = viral potential.
+
+### Persona Mixer (Model Fusion Output)
+
+“Give me a hybrid of GPT’s creativity + Gemini’s factuality.”
+Blend parts of responses into one.
+Slider: 🎭 Creativity ←→ 🎯 Accuracy
+Dynamic composition with explanation: “Opening is from GPT, core is from Gemini.”
+Why it wins: Custom-model creation on the fly.
