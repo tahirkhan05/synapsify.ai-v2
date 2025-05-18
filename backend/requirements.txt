@@ -1,0 +1,10 @@
+mistralai
+openai 
+python-dotenv
+google.generativeai
+groq
+google-genai
+chardet
+pypdf2
+python-docx
+PyPDF2
