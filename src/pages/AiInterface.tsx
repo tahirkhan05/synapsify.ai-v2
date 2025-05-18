@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -277,9 +278,9 @@ const AiInterface = () => {
                         size="icon"
                         className="border-zinc-400 dark:border-zinc-600"
                         onClick={() => {
-                          if (layout === 1) onLayoutChange(2);
-                          else if (layout === 2) onLayoutChange(4);
-                          else onLayoutChange(1);
+                          if (panelLayout === 1) setPanelLayout(2);
+                          else if (panelLayout === 2) setPanelLayout(4);
+                          else setPanelLayout(1);
                         }}
                       >
                         <LayoutGrid className="h-4 w-4" />
