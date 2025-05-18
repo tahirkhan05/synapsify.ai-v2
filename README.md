@@ -18,7 +18,7 @@ npm i
 npm run dev
 ```
 
-## The frontend is built with:
+### The frontend is built with:
 
 - Vite
 - TypeScript
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-## The backend is built with:
+### The backend is built with:
 
 - Python
 
