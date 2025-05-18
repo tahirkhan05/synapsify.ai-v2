@@ -45,7 +45,12 @@ LLAMA_API_KEY = apikey_here
 OPENAI_API_KEY = apikey_here
 SUMMARIZER_API_KEY = apikey_here
 
-# Step 4: Run backend.
+# Step 4: Run requiremnts.txt to install libraries.
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+
+# Step 5: Run backend.
 python main.py
 ```
 
