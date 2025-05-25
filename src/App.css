@@ -1,8 +1,8 @@
 
 #root {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
-  text-align: center;
+  text-align: left;
 }
 
 .logo {
@@ -41,17 +41,32 @@
   color: #888;
 }
 
-/* Custom header styling */
-header {
-  background: linear-gradient(to bottom, hsl(var(--secondary)), transparent);
-  border-bottom: 2px solid var(--border);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
-  position: relative;
-  z-index: 10;
+/* Custom header styling for homepage */
+.homepage-header {
+  background: linear-gradient(to bottom, hsl(var(--background)), hsl(var(--background)/95%));
+  border-bottom: 1px solid hsl(var(--border));
+  backdrop-filter: blur(8px);
 }
 
-.dark header {
-  background: linear-gradient(to bottom, hsl(var(--secondary)/50%), transparent);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-  border-bottom: 2px solid hsl(var(--border));
+/* Custom chat interface styling */
+.chat-interface-header {
+  background: linear-gradient(to bottom, hsl(var(--background)/95%), hsl(var(--background)/80%));
+  border-bottom: 1px solid hsl(var(--border));
+  backdrop-filter: blur(12px);
+}
+
+.dark .chat-interface-header {
+  background: linear-gradient(to bottom, hsl(var(--background)/95%), hsl(var(--background)/80%));
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+/* Sidebar styling */
+[data-sidebar="sidebar"] {
+  background: hsl(var(--sidebar-background));
+  border-right: 1px solid hsl(var(--sidebar-border));
+}
+
+.dark [data-sidebar="sidebar"] {
+  background: hsl(var(--sidebar-background));
+  border-right: 1px solid hsl(var(--sidebar-border));
 }

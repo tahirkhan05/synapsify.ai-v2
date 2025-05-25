@@ -14,6 +14,11 @@ import {
 } from "@/components/ui/tooltip";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import {
   Download,
   FileUp,
   Mic,
@@ -23,10 +28,12 @@ import {
   Home,
   Copy,
   LayoutGrid,
+  Sparkles,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChatPanel } from "@/components/ChatPanel";
 import { PanelToggle } from "@/components/PanelToggle";
+import { ChatSidebar } from "@/components/ChatSidebar";
 import { useToast } from "@/hooks/use-toast";
 
 // Mock data for model providers
@@ -198,255 +205,249 @@ const AiInterface = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-primary/5 shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2 mr-6">
-              <img
-                src="/placeholder.svg"
-                alt="Synapsify Logo"
-                className="h-8 w-8"
-              />
-              <span className="font-bold text-xl">SYNAPSIFY.AI</span>
-            </Link>
-          </div>
-          
-          <div className="flex items-center space-x-3">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon" onClick={handleClearChat} className="border-zinc-400 dark:border-zinc-600">
-                    <RefreshCw className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Clear chat history</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="border-zinc-400 dark:border-zinc-600"
-                    onClick={() => {
-                      if (panelLayout === 1) setPanelLayout(2);
-                      else if (panelLayout === 2) setPanelLayout(3);
-                      else if (panelLayout === 3) setPanelLayout(4);
-                      else setPanelLayout(1);
-                    }}
-                  >
-                    <LayoutGrid className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Change grid layout</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon" onClick={handleDownload} className="border-zinc-400 dark:border-zinc-600">
-                    <Download className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Download conversation</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            <Link to="/">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="border-zinc-400 dark:border-zinc-600">
-                      <Home className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Back to home</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </Link>
-            
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 container mx-auto px-4 py-6">
-        {/* Panels Section */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center">
-              <PanelToggle 
-                panelCount={panelCount} 
-                onPanelCountChange={handleUpdatePanelCount}
-                layout={panelLayout} 
-                onLayoutChange={setPanelLayout} 
-              />
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Switch 
-                  id="summary-mode" 
-                  checked={enableSummary} 
-                  onCheckedChange={setEnableSummary} 
-                />
-                <Label htmlFor="summary-mode">Summarize</Label>
+    <SidebarProvider>
+      <div className="min-h-screen w-full flex bg-background">
+        <ChatSidebar />
+        
+        <SidebarInset className="flex flex-col">
+          {/* Header */}
+          <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="flex h-16 items-center gap-4 px-6">
+              <SidebarTrigger className="h-7 w-7" />
+              
+              <div className="flex items-center gap-2 flex-1">
+                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <span className="font-bold text-xl">Synapsify</span>
               </div>
-            </div>
-          </div>
-          
-          <div className={`grid gap-4 ${
-            panelLayout === 1 ? 'grid-cols-1' : 
-            panelLayout === 2 ? 'grid-cols-1 md:grid-cols-2' : 
-            panelLayout === 3 ? 'grid-cols-1 md:grid-cols-3' :
-            'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-          }`}>
-            <AnimatePresence>
-              {panels.map((panel) => (
-                <motion.div
-                  key={panel.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <ChatPanel
-                    panel={panel}
-                    modelProviders={modelProviders}
-                    isGenerating={isGenerating}
-                    onUpdate={(updatedPanel) => {
-                      const updatedPanels = panels.map(p => 
-                        p.id === updatedPanel.id ? updatedPanel : p
-                      );
-                      setPanels(updatedPanels);
-                    }}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </div>
+              
+              <div className="flex items-center gap-2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="icon" onClick={handleClearChat}>
+                        <RefreshCw className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Clear chat history</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          if (panelLayout === 1) setPanelLayout(2);
+                          else if (panelLayout === 2) setPanelLayout(3);
+                          else if (panelLayout === 3) setPanelLayout(4);
+                          else setPanelLayout(1);
+                        }}
+                      >
+                        <LayoutGrid className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Change grid layout</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
 
-        {/* Summary Section */}
-        {enableSummary && summaryContent && panels.length > 1 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6"
-          >
-            <Card className="border bg-secondary/5">
-              <CardContent className="p-4">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-lg font-semibold">Summary</h3>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="icon" onClick={handleDownload}>
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Download conversation</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <Link to="/">
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" onClick={handleCopySummary}>
-                          <Copy className="h-4 w-4" />
+                        <Button variant="outline" size="icon">
+                          <Home className="h-4 w-4" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Copy summary</p>
-                      </TooltipContent>
+                      <TooltipContent>Back to home</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </Link>
+                
+                <ThemeToggle />
+              </div>
+            </div>
+          </header>
+
+          {/* Main Content */}
+          <main className="flex-1 overflow-auto">
+            <div className="container mx-auto px-6 py-6">
+              {/* Panels Section */}
+              <div className="mb-6">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center">
+                    <PanelToggle 
+                      panelCount={panelCount} 
+                      onPanelCountChange={handleUpdatePanelCount}
+                      layout={panelLayout} 
+                      onLayoutChange={setPanelLayout} 
+                    />
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <Switch 
+                        id="summary-mode" 
+                        checked={enableSummary} 
+                        onCheckedChange={setEnableSummary} 
+                      />
+                      <Label htmlFor="summary-mode">Summarize</Label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className={`grid gap-4 ${
+                  panelLayout === 1 ? 'grid-cols-1' : 
+                  panelLayout === 2 ? 'grid-cols-1 md:grid-cols-2' : 
+                  panelLayout === 3 ? 'grid-cols-1 md:grid-cols-3' :
+                  'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+                }`}>
+                  <AnimatePresence>
+                    {panels.map((panel) => (
+                      <motion.div
+                        key={panel.id}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <ChatPanel
+                          panel={panel}
+                          modelProviders={modelProviders}
+                          isGenerating={isGenerating}
+                          onUpdate={(updatedPanel) => {
+                            const updatedPanels = panels.map(p => 
+                              p.id === updatedPanel.id ? updatedPanel : p
+                            );
+                            setPanels(updatedPanels);
+                          }}
+                        />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </div>
+
+              {/* Summary Section */}
+              {enableSummary && summaryContent && panels.length > 1 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6"
+                >
+                  <Card className="border bg-secondary/5">
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="text-lg font-semibold">Summary</h3>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button variant="ghost" size="icon" onClick={handleCopySummary}>
+                                <Copy className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Copy summary</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <div className="prose dark:prose-invert">
+                        <p>{summaryContent}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
+            </div>
+          </main>
+
+          {/* Input Form */}
+          <div className="sticky bottom-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="container mx-auto px-6 py-4">
+              <form onSubmit={handleSubmit} className="flex items-center gap-2">
+                <div className="flex-none">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button type="button" variant="outline" size="icon" onClick={handleFileUpload}>
+                          <FileUp className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Upload a file</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>
-                <div className="prose dark:prose-invert">
-                  <p>{summaryContent}</p>
+                
+                <div className="flex-none">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button type="button" variant="outline" size="icon" onClick={handleVoiceInput}>
+                          <Mic className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Voice input</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-
-        {/* Input Form */}
-        <div className="sticky bottom-4 bg-background py-4">
-          <form onSubmit={handleSubmit} className="flex items-center gap-2">
-            <div className="flex-none">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button type="button" variant="outline" size="icon" onClick={handleFileUpload}>
-                      <FileUp className="h-4 w-4" />
+                
+                <div className="flex-1">
+                  <Input
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="Message Synapsify..."
+                    className="w-full rounded-2xl border-2 focus:border-primary/50 bg-background/50"
+                    disabled={isGenerating}
+                  />
+                </div>
+                
+                <div className="flex-none">
+                  <Button 
+                    type="submit" 
+                    variant="default" 
+                    size="icon"
+                    disabled={isGenerating || !prompt.trim()}
+                    className="rounded-2xl"
+                  >
+                    {isGenerating ? (
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+                
+                {isGenerating && (
+                  <div className="flex-none">
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => setIsGenerating(false)}
+                      className="rounded-2xl"
+                    >
+                      <X className="h-4 w-4" />
                     </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Upload a file</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            
-            <div className="flex-none">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button type="button" variant="outline" size="icon" onClick={handleVoiceInput}>
-                      <Mic className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Voice input</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            
-            <div className="flex-1">
-              <Input
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Type your message here..."
-                className="w-full"
-                disabled={isGenerating}
-              />
-            </div>
-            
-            <div className="flex-none">
-              <Button 
-                type="submit" 
-                variant="default" 
-                size="icon"
-                disabled={isGenerating || !prompt.trim()}
-              >
-                {isGenerating ? (
-                  <RefreshCw className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
+                  </div>
                 )}
-              </Button>
+              </form>
             </div>
-            
-            {isGenerating && (
-              <div className="flex-none">
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => setIsGenerating(false)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
-          </form>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="py-6 border-t mt-auto">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-foreground/60">
-            &copy; {new Date().getFullYear()} Synapsify.AI. All rights reserved.
-          </p>
-        </div>
-      </footer>
-    </div>
+          </div>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 
