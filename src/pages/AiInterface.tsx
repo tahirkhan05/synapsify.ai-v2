@@ -27,12 +27,12 @@ import {
   X,
   Home,
   Copy,
-  LayoutGrid,
   Sparkles,
+  Columns2,
+  LayoutGrid,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChatPanel } from "@/components/ChatPanel";
-import { PanelToggle } from "@/components/PanelToggle";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { useToast } from "@/hooks/use-toast";
 
@@ -75,7 +75,7 @@ const AiInterface = () => {
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [enableSummary, setEnableSummary] = useState(true);
-  const [panelLayout, setPanelLayout] = useState<1|2|3|4>(1);
+  const [panelLayout, setPanelLayout] = useState<1|2>(1);
   const [panelCount, setPanelCount] = useState(1);
   const [panels, setPanels] = useState([
     { id: 1, provider: "openai", model: "gpt-4.1-nano", audience: "", role: "", messages: [] }
@@ -106,6 +106,20 @@ const AiInterface = () => {
     }
     
     setPanelCount(count);
+  };
+
+  const toggleGridLayout = () => {
+    if (panelLayout === 1) {
+      setPanelLayout(2);
+      if (panelCount === 1) {
+        handleUpdatePanelCount(2);
+      }
+    } else {
+      setPanelLayout(1);
+      if (panelCount > 1) {
+        handleUpdatePanelCount(1);
+      }
+    }
   };
 
   const handleClearChat = () => {
@@ -211,22 +225,27 @@ const AiInterface = () => {
         
         <SidebarInset className="flex flex-col">
           {/* Header */}
-          <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <header className="sticky top-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/90">
             <div className="flex h-16 items-center gap-4 px-6">
-              <SidebarTrigger className="h-7 w-7" />
+              <SidebarTrigger className="h-8 w-8 text-foreground/60 hover:text-foreground hover:bg-secondary/80 rounded-md transition-all duration-200 [&>svg]:h-4 [&>svg]:w-4" />
               
-              <div className="flex items-center gap-2 flex-1">
-                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Sparkles className="h-5 w-5 text-primary-foreground" />
+              <div className="flex items-center gap-3 flex-1">
+                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center shadow-sm">
+                  <Sparkles className="h-4 w-4 text-primary-foreground" />
                 </div>
-                <span className="font-bold text-xl">Synapsify</span>
+                <span className="font-semibold text-lg text-foreground">Synapsify</span>
               </div>
               
               <div className="flex items-center gap-2">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="icon" onClick={handleClearChat}>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={handleClearChat}
+                        className="h-9 w-9 hover:bg-secondary/80 transition-colors"
+                      >
                         <RefreshCw className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
@@ -238,26 +257,33 @@ const AiInterface = () => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="icon"
-                        onClick={() => {
-                          if (panelLayout === 1) setPanelLayout(2);
-                          else if (panelLayout === 2) setPanelLayout(3);
-                          else if (panelLayout === 3) setPanelLayout(4);
-                          else setPanelLayout(1);
-                        }}
+                        onClick={toggleGridLayout}
+                        className="h-9 w-9 hover:bg-secondary/80 transition-colors"
                       >
-                        <LayoutGrid className="h-4 w-4" />
+                        {panelLayout === 1 ? (
+                          <LayoutGrid className="h-4 w-4" />
+                        ) : (
+                          <Columns2 className="h-4 w-4" />
+                        )}
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Change grid layout</TooltipContent>
+                    <TooltipContent>
+                      {panelLayout === 1 ? 'Switch to side-by-side view' : 'Switch to single view'}
+                    </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
 
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="icon" onClick={handleDownload}>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={handleDownload}
+                        className="h-9 w-9 hover:bg-secondary/80 transition-colors"
+                      >
                         <Download className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
@@ -269,7 +295,11 @@ const AiInterface = () => {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="outline" size="icon">
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          className="h-9 w-9 hover:bg-secondary/80 transition-colors"
+                        >
                           <Home className="h-4 w-4" />
                         </Button>
                       </TooltipTrigger>
@@ -286,34 +316,26 @@ const AiInterface = () => {
           {/* Main Content */}
           <main className="flex-1 overflow-auto">
             <div className="container mx-auto px-6 py-6">
-              {/* Panels Section */}
+              {/* Controls Section */}
               <div className="mb-6">
-                <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center">
-                    <PanelToggle 
-                      panelCount={panelCount} 
-                      onPanelCountChange={handleUpdatePanelCount}
-                      layout={panelLayout} 
-                      onLayoutChange={setPanelLayout} 
+                <div className="flex justify-end items-center">
+                  <div className="flex items-center space-x-2">
+                    <Switch 
+                      id="summary-mode" 
+                      checked={enableSummary} 
+                      onCheckedChange={setEnableSummary} 
                     />
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
-                      <Switch 
-                        id="summary-mode" 
-                        checked={enableSummary} 
-                        onCheckedChange={setEnableSummary} 
-                      />
-                      <Label htmlFor="summary-mode">Summarize</Label>
-                    </div>
+                    <Label htmlFor="summary-mode" className="text-sm font-medium">
+                      Enable summary
+                    </Label>
                   </div>
                 </div>
-                
-                <div className={`grid gap-4 ${
-                  panelLayout === 1 ? 'grid-cols-1' : 
-                  panelLayout === 2 ? 'grid-cols-1 md:grid-cols-2' : 
-                  panelLayout === 3 ? 'grid-cols-1 md:grid-cols-3' :
-                  'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+              </div>
+
+              {/* Panels Section */}
+              <div className="mb-6">
+                <div className={`grid gap-6 ${
+                  panelLayout === 1 ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'
                 }`}>
                   <AnimatePresence>
                     {panels.map((panel) => (
@@ -348,10 +370,10 @@ const AiInterface = () => {
                   animate={{ opacity: 1, y: 0 }}
                   className="mb-6"
                 >
-                  <Card className="border bg-secondary/5">
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="text-lg font-semibold">Summary</h3>
+                  <Card className="border border-border/40 bg-secondary/5 backdrop-blur-sm">
+                    <CardContent className="p-6">
+                      <div className="flex justify-between items-center mb-3">
+                        <h3 className="text-lg font-semibold text-foreground">Summary</h3>
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -363,8 +385,8 @@ const AiInterface = () => {
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      <div className="prose dark:prose-invert">
-                        <p>{summaryContent}</p>
+                      <div className="prose dark:prose-invert max-w-none">
+                        <p className="text-foreground/80">{summaryContent}</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -374,14 +396,20 @@ const AiInterface = () => {
           </main>
 
           {/* Input Form */}
-          <div className="sticky bottom-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="sticky bottom-0 border-t border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/90">
             <div className="container mx-auto px-6 py-4">
-              <form onSubmit={handleSubmit} className="flex items-center gap-2">
+              <form onSubmit={handleSubmit} className="flex items-center gap-3">
                 <div className="flex-none">
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button type="button" variant="outline" size="icon" onClick={handleFileUpload}>
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="icon" 
+                          onClick={handleFileUpload}
+                          className="h-10 w-10 border-border/60 hover:bg-secondary/80"
+                        >
                           <FileUp className="h-4 w-4" />
                         </Button>
                       </TooltipTrigger>
@@ -394,7 +422,13 @@ const AiInterface = () => {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button type="button" variant="outline" size="icon" onClick={handleVoiceInput}>
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="icon" 
+                          onClick={handleVoiceInput}
+                          className="h-10 w-10 border-border/60 hover:bg-secondary/80"
+                        >
                           <Mic className="h-4 w-4" />
                         </Button>
                       </TooltipTrigger>
@@ -408,7 +442,7 @@ const AiInterface = () => {
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder="Message Synapsify..."
-                    className="w-full rounded-2xl border-2 focus:border-primary/50 bg-background/50"
+                    className="w-full h-12 rounded-xl border-border/60 focus:border-primary/50 bg-background/50 text-base px-4"
                     disabled={isGenerating}
                   />
                 </div>
@@ -419,7 +453,7 @@ const AiInterface = () => {
                     variant="default" 
                     size="icon"
                     disabled={isGenerating || !prompt.trim()}
-                    className="rounded-2xl"
+                    className="h-10 w-10 rounded-xl bg-primary hover:bg-primary/90"
                   >
                     {isGenerating ? (
                       <RefreshCw className="h-4 w-4 animate-spin" />
@@ -436,7 +470,7 @@ const AiInterface = () => {
                       variant="ghost" 
                       size="icon"
                       onClick={() => setIsGenerating(false)}
-                      className="rounded-2xl"
+                      className="h-10 w-10 rounded-xl hover:bg-secondary/80"
                     >
                       <X className="h-4 w-4" />
                     </Button>
