@@ -36,9 +36,9 @@ export function ChatSidebar() {
   ]);
 
   return (
-    <Sidebar className="border-r border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/90">
-      <SidebarHeader className="p-4 border-b border-border/40">
-        <Button className="w-full justify-start gap-3 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm h-11 rounded-lg font-medium">
+    <Sidebar className="border-r bg-background/80 backdrop-blur-sm">
+      <SidebarHeader className="p-4 border-b">
+        <Button className="w-full justify-start gap-3 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm h-11 rounded-xl font-medium transition-all">
           <Plus className="h-4 w-4" />
           New Chat
         </Button>
@@ -50,14 +50,14 @@ export function ChatSidebar() {
             <Clock className="h-4 w-4" />
             Recent Conversations
           </div>
-          <Separator className="bg-border/40" />
+          <Separator />
         </div>
         
         <ScrollArea className="flex-1">
           <SidebarMenu className="gap-1">
             {chatHistory.map((chat) => (
               <SidebarMenuItem key={chat.id}>
-                <SidebarMenuButton className="w-full justify-between group hover:bg-secondary/80 rounded-lg transition-all duration-200 p-3 h-auto min-h-[60px]">
+                <SidebarMenuButton className="w-full justify-between group hover:bg-secondary/80 rounded-xl transition-all duration-200 p-3 h-auto min-h-[60px]">
                   <div className="flex items-start gap-3 min-w-0 flex-1">
                     <MessageSquare className="h-4 w-4 shrink-0 mt-0.5 text-foreground/60" />
                     <div className="min-w-0 flex-1">

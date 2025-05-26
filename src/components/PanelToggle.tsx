@@ -9,8 +9,6 @@ import {
 import {
   LayoutGrid,
   Columns2,
-  Columns3,
-  Grid2x2,
 } from "lucide-react";
 
 interface PanelToggleProps {
@@ -32,8 +30,6 @@ export function PanelToggle({
     // Automatically adjust layout based on panel count
     if (count === 1) onLayoutChange(1);
     else if (count === 2) onLayoutChange(2);
-    else if (count === 3) onLayoutChange(3);
-    else onLayoutChange(4);
   };
 
   return (
@@ -45,7 +41,7 @@ export function PanelToggle({
               variant={panelCount === 1 ? "default" : "outline"}
               size="icon"
               onClick={() => togglePanel(1)}
-              className="border-zinc-400 dark:border-zinc-600"
+              className="h-9 w-9 hover:bg-secondary/80 transition-colors"
             >
               <LayoutGrid className="h-4 w-4" />
             </Button>
@@ -63,49 +59,13 @@ export function PanelToggle({
               variant={panelCount === 2 ? "default" : "outline"}
               size="icon"
               onClick={() => togglePanel(2)}
-              className="border-zinc-400 dark:border-zinc-600"
+              className="h-9 w-9 hover:bg-secondary/80 transition-colors"
             >
               <Columns2 className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
             <p>Two panels</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant={panelCount === 3 ? "default" : "outline"}
-              size="icon"
-              onClick={() => togglePanel(3)}
-              className="border-zinc-400 dark:border-zinc-600"
-            >
-              <Columns3 className="h-4 w-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Three panels</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant={panelCount === 4 ? "default" : "outline"}
-              size="icon"
-              onClick={() => togglePanel(4)}
-              className="border-zinc-400 dark:border-zinc-600"
-            >
-              <Grid2x2 className="h-4 w-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Four panels</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

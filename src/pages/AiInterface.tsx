@@ -28,12 +28,15 @@ import {
   Home,
   Copy,
   Sparkles,
-  Columns2,
   LayoutGrid,
+  Columns2,
+  Columns3,
+  Grid2x2,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChatPanel } from "@/components/ChatPanel";
 import { ChatSidebar } from "@/components/ChatSidebar";
+import { PanelToggle } from "@/components/PanelToggle";
 import { useToast } from "@/hooks/use-toast";
 
 // Mock data for model providers
@@ -75,7 +78,7 @@ const AiInterface = () => {
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [enableSummary, setEnableSummary] = useState(true);
-  const [panelLayout, setPanelLayout] = useState<1|2>(1);
+  const [panelLayout, setPanelLayout] = useState<1|2|3|4>(1);
   const [panelCount, setPanelCount] = useState(1);
   const [panels, setPanels] = useState([
     { id: 1, provider: "openai", model: "gpt-4.1-nano", audience: "", role: "", messages: [] }
@@ -106,19 +109,13 @@ const AiInterface = () => {
     }
     
     setPanelCount(count);
+    setPanelLayout(count as 1|2|3|4);
   };
 
-  const toggleGridLayout = () => {
-    if (panelLayout === 1) {
-      setPanelLayout(2);
-      if (panelCount === 1) {
-        handleUpdatePanelCount(2);
-      }
-    } else {
-      setPanelLayout(1);
-      if (panelCount > 1) {
-        handleUpdatePanelCount(1);
-      }
+  const handleLayoutChange = (layout: 1|2|3|4) => {
+    setPanelLayout(layout);
+    if (layout !== panelCount) {
+      handleUpdatePanelCount(layout);
     }
   };
 
@@ -218,25 +215,47 @@ const AiInterface = () => {
     }
   };
 
+  const getGridLayoutClass = () => {
+    switch (panelLayout) {
+      case 1:
+        return 'grid-cols-1';
+      case 2:
+        return 'grid-cols-1 lg:grid-cols-2';
+      case 3:
+        return 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3';
+      case 4:
+        return 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-4';
+      default:
+        return 'grid-cols-1';
+    }
+  };
+
   return (
     <SidebarProvider>
-      <div className="min-h-screen w-full flex bg-background">
+      <div className="min-h-screen w-full flex bg-gradient-to-br from-background via-background to-primary/5">
         <ChatSidebar />
         
         <SidebarInset className="flex flex-col">
           {/* Header */}
-          <header className="sticky top-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/90">
+          <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
             <div className="flex h-16 items-center gap-4 px-6">
-              <SidebarTrigger className="h-8 w-8 text-foreground/60 hover:text-foreground hover:bg-secondary/80 rounded-md transition-all duration-200 [&>svg]:h-4 [&>svg]:w-4" />
+              <SidebarTrigger className="h-8 w-8 text-foreground/60 hover:text-foreground hover:bg-secondary/80 rounded-md transition-all duration-200" />
               
               <div className="flex items-center gap-3 flex-1">
                 <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center shadow-sm">
                   <Sparkles className="h-4 w-4 text-primary-foreground" />
                 </div>
-                <span className="font-semibold text-lg text-foreground">Synapsify</span>
+                <span className="font-semibold text-xl text-foreground">Synapsify</span>
               </div>
               
               <div className="flex items-center gap-2">
+                <PanelToggle
+                  panelCount={panelCount}
+                  onPanelCountChange={handleUpdatePanelCount}
+                  layout={panelLayout}
+                  onLayoutChange={handleLayoutChange}
+                />
+                
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -250,28 +269,6 @@ const AiInterface = () => {
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>Clear chat history</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={toggleGridLayout}
-                        className="h-9 w-9 hover:bg-secondary/80 transition-colors"
-                      >
-                        {panelLayout === 1 ? (
-                          <LayoutGrid className="h-4 w-4" />
-                        ) : (
-                          <Columns2 className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      {panelLayout === 1 ? 'Switch to side-by-side view' : 'Switch to single view'}
-                    </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
 
@@ -334,9 +331,7 @@ const AiInterface = () => {
 
               {/* Panels Section */}
               <div className="mb-6">
-                <div className={`grid gap-6 ${
-                  panelLayout === 1 ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'
-                }`}>
+                <div className={`grid gap-6 ${getGridLayoutClass()}`}>
                   <AnimatePresence>
                     {panels.map((panel) => (
                       <motion.div
@@ -370,7 +365,7 @@ const AiInterface = () => {
                   animate={{ opacity: 1, y: 0 }}
                   className="mb-6"
                 >
-                  <Card className="border border-border/40 bg-secondary/5 backdrop-blur-sm">
+                  <Card className="border bg-background/60 backdrop-blur-sm shadow-lg">
                     <CardContent className="p-6">
                       <div className="flex justify-between items-center mb-3">
                         <h3 className="text-lg font-semibold text-foreground">Summary</h3>
@@ -396,7 +391,7 @@ const AiInterface = () => {
           </main>
 
           {/* Input Form */}
-          <div className="sticky bottom-0 border-t border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/90">
+          <div className="sticky bottom-0 border-t bg-background/80 backdrop-blur-sm">
             <div className="container mx-auto px-6 py-4">
               <form onSubmit={handleSubmit} className="flex items-center gap-3">
                 <div className="flex-none">
@@ -408,7 +403,7 @@ const AiInterface = () => {
                           variant="outline" 
                           size="icon" 
                           onClick={handleFileUpload}
-                          className="h-10 w-10 border-border/60 hover:bg-secondary/80"
+                          className="h-10 w-10 hover:bg-secondary/80"
                         >
                           <FileUp className="h-4 w-4" />
                         </Button>
@@ -427,7 +422,7 @@ const AiInterface = () => {
                           variant="outline" 
                           size="icon" 
                           onClick={handleVoiceInput}
-                          className="h-10 w-10 border-border/60 hover:bg-secondary/80"
+                          className="h-10 w-10 hover:bg-secondary/80"
                         >
                           <Mic className="h-4 w-4" />
                         </Button>
@@ -442,7 +437,7 @@ const AiInterface = () => {
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder="Message Synapsify..."
-                    className="w-full h-12 rounded-xl border-border/60 focus:border-primary/50 bg-background/50 text-base px-4"
+                    className="w-full h-12 rounded-xl bg-background/50 text-base px-4"
                     disabled={isGenerating}
                   />
                 </div>
