@@ -36,9 +36,9 @@ export function ChatSidebar() {
   ]);
 
   return (
-    <Sidebar className="border-r border-gray-200 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
-      <SidebarHeader className="p-4 border-b border-gray-200 dark:border-gray-800">
-        <Button className="w-full justify-start gap-3 bg-gray-900 hover:bg-gray-800 dark:bg-gray-100 dark:hover:bg-gray-200 text-white dark:text-gray-900 shadow-sm h-11 rounded-xl font-medium transition-all">
+    <Sidebar className="border-r bg-background/60 backdrop-blur-sm">
+      <SidebarHeader className="p-4 border-b">
+        <Button className="w-full justify-start gap-3 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm h-11 rounded-xl font-medium transition-all">
           <Plus className="h-4 w-4" />
           New Chat
         </Button>
@@ -46,39 +46,39 @@ export function ChatSidebar() {
       
       <SidebarContent className="p-2">
         <div className="px-2 py-3">
-          <div className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-3">
             <Clock className="h-4 w-4" />
             Recent Conversations
           </div>
-          <Separator className="bg-gray-200 dark:bg-gray-800" />
+          <Separator />
         </div>
         
         <ScrollArea className="flex-1">
           <SidebarMenu className="gap-1">
             {chatHistory.map((chat) => (
               <SidebarMenuItem key={chat.id}>
-                <SidebarMenuButton className="w-full justify-between group hover:bg-gray-100 dark:hover:bg-gray-900/50 rounded-xl transition-all duration-200 p-3 h-auto min-h-[60px]">
+                <SidebarMenuButton className="w-full justify-between group hover:bg-secondary/80 rounded-xl transition-all duration-200 p-3 h-auto min-h-[60px]">
                   <div className="flex items-start gap-3 min-w-0 flex-1">
-                    <MessageSquare className="h-4 w-4 shrink-0 mt-0.5 text-gray-500 dark:text-gray-400" />
+                    <MessageSquare className="h-4 w-4 shrink-0 mt-0.5 text-muted-foreground" />
                     <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-medium text-gray-900 dark:text-gray-100 leading-tight mb-1">
+                      <div className="truncate text-sm font-medium text-foreground leading-tight mb-1">
                         {chat.title}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">{chat.timestamp}</div>
+                      <div className="text-xs text-muted-foreground">{chat.timestamp}</div>
                     </div>
                   </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-6 w-6 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+                      className="h-6 w-6 hover:bg-secondary transition-colors"
                     >
                       <Edit3 className="h-3 w-3" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-6 w-6 hover:bg-red-100 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                      className="h-6 w-6 hover:bg-destructive/20 hover:text-destructive transition-colors"
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
