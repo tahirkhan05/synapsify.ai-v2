@@ -9,6 +9,10 @@ import {
 import {
   LayoutGrid,
   Columns2,
+  Square,
+  Grid2X2,
+  Grid3X3,
+  LayoutDashboard,
 } from "lucide-react";
 
 interface PanelToggleProps {
@@ -24,51 +28,127 @@ export function PanelToggle({
   layout,
   onLayoutChange,
 }: PanelToggleProps) {
-  const togglePanel = (count: number) => {
-    onPanelCountChange(count);
-    
-    // Automatically adjust layout based on panel count
-    if (count === 1) onLayoutChange(1);
-    else if (count === 2) onLayoutChange(2);
-  };
-
   return (
-    <div className="flex items-center space-x-2">
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant={panelCount === 1 ? "default" : "outline"}
-              size="icon"
-              onClick={() => togglePanel(1)}
-              className="h-9 w-9 hover:bg-secondary/80 transition-colors"
-            >
-              <LayoutGrid className="h-4 w-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Single column</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+    <div className="flex items-center space-x-4">
+      {/* Panel Count Controls */}
+      <div className="flex items-center space-x-2">
+        <span className="text-sm font-medium text-muted-foreground">Panels:</span>
+        <div className="flex items-center space-x-1">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={panelCount === 1 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onPanelCountChange(1)}
+                  className="h-8 w-8 p-0"
+                >
+                  <Square className="h-3 w-3" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>1 Panel</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant={panelCount === 2 ? "default" : "outline"}
-              size="icon"
-              onClick={() => togglePanel(2)}
-              className="h-9 w-9 hover:bg-secondary/80 transition-colors"
-            >
-              <Columns2 className="h-4 w-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Double column</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={panelCount === 2 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onPanelCountChange(2)}
+                  className="h-8 w-8 p-0"
+                >
+                  <Grid2X2 className="h-3 w-3" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>2 Panels</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={panelCount === 3 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onPanelCountChange(3)}
+                  className="h-8 w-8 p-0"
+                >
+                  <Grid3X3 className="h-3 w-3" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>3 Panels</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={panelCount === 4 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onPanelCountChange(4)}
+                  className="h-8 w-8 p-0"
+                >
+                  <LayoutDashboard className="h-3 w-3" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>4 Panels</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </div>
+
+      {/* Grid Layout Controls */}
+      <div className="flex items-center space-x-2">
+        <span className="text-sm font-medium text-muted-foreground">Layout:</span>
+        <div className="flex items-center space-x-1">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={layout === 1 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onLayoutChange(1)}
+                  className="h-8 w-8 p-0"
+                >
+                  <LayoutGrid className="h-3 w-3" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Single column</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={layout === 2 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onLayoutChange(2)}
+                  className="h-8 w-8 p-0"
+                >
+                  <Columns2 className="h-3 w-3" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Double column</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </div>
     </div>
   );
 }

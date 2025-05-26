@@ -104,14 +104,10 @@ const AiInterface = () => {
     }
     
     setPanelCount(count);
-    setPanelLayout(count as 1|2|3|4);
   };
 
   const handleLayoutChange = (layout: 1|2|3|4) => {
     setPanelLayout(layout);
-    if (layout !== panelCount) {
-      handleUpdatePanelCount(layout);
-    }
   };
 
   const handleClearChat = () => {
@@ -216,12 +212,8 @@ const AiInterface = () => {
         return 'grid-cols-1';
       case 2:
         return 'grid-cols-1 lg:grid-cols-2';
-      case 3:
-        return 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3';
-      case 4:
-        return 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-4';
       default:
-        return 'grid-cols-1';
+        return 'grid-cols-1 lg:grid-cols-2';
     }
   };
 
