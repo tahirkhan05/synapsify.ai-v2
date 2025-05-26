@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -28,10 +27,6 @@ import {
   Home,
   Copy,
   Sparkles,
-  LayoutGrid,
-  Columns2,
-  Columns3,
-  Grid2x2,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChatPanel } from "@/components/ChatPanel";
@@ -249,13 +244,6 @@ const AiInterface = () => {
               </div>
               
               <div className="flex items-center gap-2">
-                <PanelToggle
-                  panelCount={panelCount}
-                  onPanelCountChange={handleUpdatePanelCount}
-                  layout={panelLayout}
-                  onLayoutChange={handleLayoutChange}
-                />
-                
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -315,7 +303,13 @@ const AiInterface = () => {
             <div className="container mx-auto px-6 py-6">
               {/* Controls Section */}
               <div className="mb-6">
-                <div className="flex justify-end items-center">
+                <div className="flex justify-between items-center">
+                  <PanelToggle
+                    panelCount={panelCount}
+                    onPanelCountChange={handleUpdatePanelCount}
+                    layout={panelLayout}
+                    onLayoutChange={handleLayoutChange}
+                  />
                   <div className="flex items-center space-x-2">
                     <Switch 
                       id="summary-mode" 

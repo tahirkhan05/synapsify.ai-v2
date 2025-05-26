@@ -47,7 +47,7 @@ export function PanelToggle({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Single panel</p>
+            <p>Single column</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -65,7 +65,7 @@ export function PanelToggle({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Two panels</p>
+            <p>Double column</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
